@@ -1,0 +1,11 @@
+1) T1wMRI resampling to the fMRI's dimensions: 
+for i in $(seq -f "%02g" 1 46); do flirt -in sub-${i}/t1/*/*/sub-${i}_T1w.nii -ref sub-${i}/fmri/*/*/*$100volume.nii -out sub-${i}/T1/sub-${i}_ResampledT1w.nii; done
+
+2) T1w skull strip with FSL-BET:
+for i in $(seq -f "%02g" 1 46); do         cd sub-${i}/T1;         if [[ ! -e sub-${i}_ResampledT1w_f05_brain.nii.gz ]]; then                 echo “Skull-stripped brain doesn’t exist; stripping the brain with a fractional intensity threshold of 0.5”;                 bet sub-${i}_ResampledT1w.nii.gz sub-${i}_ResampledT1w_f05_brain.nii.gz -f 0.5;         else                 echo “Skull-Stripped brain already exists; doing nothing”;         fi;         cd ../..; done
+
+3) 3D to 4D fMRI image compression: 
+for i in $(seq -f "%02g" 1 46); do         cd sub-${i}/fmri/*/*;         fslmerge -t sub-${i}_second_merged.nii.gz *.nii; cd ../../../..; done
+
+4) 4D to 3D fMRI image decompression: 
+for i in sub-25 sub-27 sub-42 sub-21;do fslsplit /adni/${i}/fmri/*/*/${i}_second_merged.feat/filtered_func_data.nii.gz 3D_first/validation/cn/${i}_fmri_vol -t; done
