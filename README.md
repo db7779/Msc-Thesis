@@ -1,2 +1,2 @@
 # Msc-Thesis
-This repository provides python code and linux scripts used for my thesis
+This repository provides python code and linux scripts used for developing an fMRI and T1-weighted image preprocessing pipeline, and training 2D and 3D convolutional neural networks
